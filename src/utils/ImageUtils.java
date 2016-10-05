@@ -7,10 +7,41 @@ import javax.imageio.ImageIO;
 import java.awt.image.Raster;
 
 public class ImageUtils {
-	public static void writeImage(BufferedImage BI, String name, String format) throws IOException{
-	       File file = new File(name + "." + format);
+	public static void writeImage(BufferedImage BI, String name) throws IOException{
+	       File file = new File(name);
+	       String format = name.substring(name.length()-3);
 	       ImageIO.write(BI, format, file);
 	}
+	
+	public static BufferedImage loadImage(String fileName) throws IOException {
+		return ImageIO.read(new File(fileName));
+	}
+	
+	public static int colorToRGB(int alpha, int red, int green, int blue) {
+	       int newPixel = 0;
+	       newPixel += alpha; newPixel = newPixel << 8;
+	       newPixel += red; newPixel = newPixel << 8;
+	       newPixel += green; newPixel = newPixel << 8;
+	       newPixel += blue;
+	       return newPixel;
+	   }
+	
+	public static BufferedImage makeTilesFit(BufferedImage img1, BufferedImage imgtarget) {
+		   int h = imgtarget.getHeight();
+		   int w = imgtarget.getWidth();
+		   BufferedImage result = new BufferedImage(w, h, img1.getType());
+		   int x = 0;
+		   int y = 0;
+		   for(int i = 0; i < w; i++) {
+			   for(int j = 0; j < h; j++) {
+				   result.setRGB(i, j, img1.getRGB(x, y));
+				   y = (y + 1) % img1.getHeight(); 
+			   }
+			 x = (x + 1) % img1.getWidth();
+			 y = 0;
+		   }
+		   return result;
+	   }
 	
 	public static double getPSNR(BufferedImage im1, BufferedImage im2) {
 		assert(

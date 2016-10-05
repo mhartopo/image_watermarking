@@ -40,4 +40,10 @@ public class BitUtils {
 		}
 		return bits;
 	}
+	
+	public static void main(String[] args) {
+		int a = -40;
+		System.out.println(Integer.toBinaryString(a));
+		System.out.println(Integer.toBinaryString(setLSB(a,1)));
+	}
 }

@@ -2,14 +2,7 @@ package core;
 
 import java.awt.Color;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
-
 import core.vigenere.Vigenere;
-import utils.ImageUtils;
-
 public class ImageCipher {
 	private Vigenere vigenere;
 	
@@ -77,15 +70,5 @@ public class ImageCipher {
 		int[] cipher = vigenere.decrypt(plain, key);
 		result = BytesToImage(cipher, image.getWidth(), image.getHeight(), image.getType());
 		return result;
-	}
-	
-	public static void main(String[] args) throws IOException {
-		ImageCipher ic = new ImageCipher();
-		BufferedImage img = ImageIO.read(new File("C:/Users/muhtarh/Desktop/result.png"));
-		BufferedImage enc = ic.encrypt(img, "muhtarh/@dsd221dncbmcnqhagasgjfg");
-		ImageUtils.writeImage(enc, "C:/Users/muhtarh/Desktop/imgenc", "png");
-		BufferedImage dec = ic.decrypt(enc, "muhtarh/@dsd221dncbmcnqhagasgjfg");
-		ImageUtils.writeImage(dec, "C:/Users/muhtarh/Desktop/imgdec", "png");
-		System.out.println((int)('a'));
 	}
 }

@@ -48,6 +48,35 @@ public class Vigenere {
 		}
 		return result;
 	}
+	
+	public int[][] encryptArr(int[][] arr, String key, int range) {
+		int[] bkey = byteArrToInt(key);
+		int[][] result = new int[arr.length][arr[0].length];
+		int k = 0;
+		for (int i = 0; i < arr.length; i++) {
+			for(int j = 0; j < arr[0].length; j++) {
+				int c = arr[i][j];
+				result[i][j] = (int)((c + bkey[k]) % range);
+				k = (k+1) % bkey.length;	
+			}		
+		}
+		return result;
+	}
+	
+	public int[][] decryptArr(int[][] arr, String key, int range) {
+		int[] bkey = byteArrToInt(key);
+		int[][] result = new int[arr.length][arr[0].length];
+		int k = 0;
+		for (int i = 0; i < arr.length; i++) {
+			for(int j = 0; j < arr[0].length; j++) {
+				int c = arr[i][j];
+				result[i][j] = (int)((c - bkey[k]) % range);
+				k = (k+1) % bkey.length;	
+			}		
+		}
+		return result;
+	}
+	
 	private int[] byteArrToInt(String str) {
 		int[] res = new int[str.length()];
 		for(int i = 0; i < str.length(); i++) {
@@ -143,20 +172,5 @@ public class Vigenere {
 			}
 		}
 		return result;
-	}
-	
-	public static void main(String[] args) {
-		int[] bytes = {1,2,3,4,6,7,8,9,1,3,5,7,33,5,77,44};
-		String key = "abcdef";
-		Vigenere vig = new Vigenere(1);
-		int[] res = vig.encrypt(bytes, key);
-		int[] res2 = vig.decrypt(res, key);
-		for(int i = 0; i < res.length; i++) {
-			System.out.print(res[i] + " - ");
-		}
-		System.out.println("\n");
-		for(int i = 0; i < res.length; i++) {
-			System.out.print(res2[i] + " - ");
-		}
 	}
 }
