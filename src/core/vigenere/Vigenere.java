@@ -5,7 +5,7 @@ public class Vigenere {
 	private int mode;
 	//constructor
 	public Vigenere() {
-		mode = 0;
+		mode = 1;
 	}
 	
 	public Vigenere(int mode) {
@@ -48,21 +48,27 @@ public class Vigenere {
 		}
 		return result;
 	}
-	
-	public byte[] encrypt(byte[] text, String key) {
-		byte[] bkey = key.getBytes();
-		byte[] result = new byte[text.length];
+	private int[] byteArrToInt(String str) {
+		int[] res = new int[str.length()];
+		for(int i = 0; i < str.length(); i++) {
+			res[i] = (int) (str.charAt(i));
+		}
+		return res;
+	}
+	public int[] encrypt(int[] text, String key) {
+		int[] bkey = byteArrToInt(key);
+		int[] result = new int[text.length];
 		
 		if(mode == 0) {
 			key = key.toLowerCase();
-			byte[] bkey2 = key.getBytes();
+			int[] bkey2 = byteArrToInt(key);
 			int j = 0;
-			byte a = (byte)('a' & 0x00FF);
-			byte z = (byte)('z' &  0x00FF);
+			int a = (int)('a' & 0x00FF);
+			int z = (int)('z' &  0x00FF);
 			for (int i = 0; i < text.length; i++) {
-				byte c = text[i];
+				int c = text[i];
 				if (c >= a && c <= z) {
-					result[i] = (byte) ((c + bkey2[j] - 2 * a) % 26 + a);
+					result[i] = (int) ((c + bkey2[j] - 2 * a) % 26 + a);
 					j = (j+1) % bkey2.length;
 				} else {
 					result[i] = c;
@@ -71,8 +77,8 @@ public class Vigenere {
 		} else {
 			int j = 0;
 			for (int i = 0; i < text.length; i++) {
-				byte c = text[i];
-				result[i] = (byte)((c + bkey[j]) % 256);
+				int c = text[i];
+				result[i] = (int)((c + bkey[j]) % 256);
 				j = (j+1) % bkey.length;
 			
 			}
@@ -108,20 +114,20 @@ public class Vigenere {
 		return result;
 	}
 	
-	public byte[] decrypt(byte[] text, String key) {
-		byte[] bkey = key.getBytes();
-		byte[] result = new byte[text.length];
+	public int[] decrypt(int[] text, String key) {
+		int[] bkey = byteArrToInt(key);
+		int[] result = new int[text.length];
 		
 		if(mode == 0) {
 			key = key.toLowerCase();
-			byte[] bkey2 = key.getBytes();
+			int[] bkey2 = byteArrToInt(key);
 			int j = 0;
-			byte a = (byte)('a' & 0x00FF);
-			byte z = (byte)('z' &  0x00FF);
+			int a = (int)('a');
+			int z = (int)('z');
 			for (int i = 0; i < text.length; i++) {
-				byte c = text[i];
+				int c = text[i];
 				if (c >= a && c <= z) {
-					result[i] = (byte)((c - bkey2[j] + 26) % 26 + a);
+					result[i] = (int)((c - bkey2[j] + 26) % 26 + a);
 					j = (j+1) % bkey2.length;
 				} else {
 					result[i] = c;
@@ -130,12 +136,27 @@ public class Vigenere {
 		} else {
 			int j = 0;
 			for (int i = 0; i < text.length; i++) {
-				byte c = text[i];
-				result[i] = (byte)((c - bkey[j]) % 256);
+				int c = text[i];
+				result[i] = (int)((c - bkey[j]) % 256);
 				j = (j+1) % bkey.length;
 			
 			}
 		}
 		return result;
+	}
+	
+	public static void main(String[] args) {
+		int[] bytes = {1,2,3,4,6,7,8,9,1,3,5,7,33,5,77,44};
+		String key = "abcdef";
+		Vigenere vig = new Vigenere(1);
+		int[] res = vig.encrypt(bytes, key);
+		int[] res2 = vig.decrypt(res, key);
+		for(int i = 0; i < res.length; i++) {
+			System.out.print(res[i] + " - ");
+		}
+		System.out.println("\n");
+		for(int i = 0; i < res.length; i++) {
+			System.out.print(res2[i] + " - ");
+		}
 	}
 }
