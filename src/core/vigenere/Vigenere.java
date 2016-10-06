@@ -1,5 +1,7 @@
 package core.vigenere;
 
+import java.util.Random;
+
 public class Vigenere {
 	//mode 0 =  26 character (a - z), mode 1 = 256 ASCII
 	private int mode;
@@ -49,33 +51,7 @@ public class Vigenere {
 		return result;
 	}
 	
-	public int[][] encryptArr(int[][] arr, String key, int range) {
-		int[] bkey = byteArrToInt(key);
-		int[][] result = new int[arr.length][arr[0].length];
-		int k = 0;
-		for (int i = 0; i < arr.length; i++) {
-			for(int j = 0; j < arr[0].length; j++) {
-				int c = arr[i][j];
-				result[i][j] = (int)((c + bkey[k]) % range);
-				k = (k+1) % bkey.length;	
-			}		
-		}
-		return result;
-	}
 	
-	public int[][] decryptArr(int[][] arr, String key, int range) {
-		int[] bkey = byteArrToInt(key);
-		int[][] result = new int[arr.length][arr[0].length];
-		int k = 0;
-		for (int i = 0; i < arr.length; i++) {
-			for(int j = 0; j < arr[0].length; j++) {
-				int c = arr[i][j];
-				result[i][j] = (int)((c - bkey[k]) % range);
-				k = (k+1) % bkey.length;	
-			}		
-		}
-		return result;
-	}
 	
 	private int[] byteArrToInt(String str) {
 		int[] res = new int[str.length()];
@@ -172,5 +148,65 @@ public class Vigenere {
 			}
 		}
 		return result;
+	}
+	
+	public int[][] encryptArr(int[][] arr, String key, int range) {
+		int seed = 0;
+		for(int i = 0; i < key.length(); i++) {
+			seed += (int) key.charAt(i) - i;
+		}
+		
+		Random rand = new Random(seed);
+		int[][] result = new int[arr.length][arr[0].length];
+		for (int i = 0; i < arr.length; i++) {
+			for(int j = 0; j < arr[0].length; j++) {
+				int c = arr[i][j];
+				int randnum = rand.nextInt();
+				result[i][j] = (int)((c + randnum) % range);
+				if(result[i][j] < 0) {
+					result[i][j] += range;
+				}
+			}		
+		}
+		return result;
+	}
+	
+	public int[][] decryptArr(int[][] arr, String key, int range) {
+		int seed = 0;
+		for(int i = 0; i < key.length(); i++) {
+			seed += (int) key.charAt(i) - i;
+		}
+		
+		Random rand = new Random(seed);
+		
+		int[][] result = new int[arr.length][arr[0].length];
+		for (int i = 0; i < arr.length; i++) {
+			for(int j = 0; j < arr[0].length; j++) {
+				int c = arr[i][j];
+				result[i][j] = (int)((c - rand.nextInt()) % range);
+				if(result[i][j] < 0) {
+					result[i][j] += range;
+				}
+			}		
+		}
+		return result;
+	}
+	
+	public static void main(String[] args) {
+		Vigenere vig = new Vigenere();
+		int[][] a = {{1,1,1},{1,0,1},{1,0,0},{0,0,1}};
+		int[][] b = vig.encryptArr(a, "yeah", 2);
+		for(int i = 0; i < b.length; i++) {
+			for(int j = 0; j < b[0].length; j++) {
+				System.out.print(b[i][j] + " - ");
+			}
+		}
+		System.out.println("====");
+		int[][] c = vig.decryptArr(b, "yeah", 2);
+		for(int i = 0; i < c.length; i++) {
+			for(int j = 0; j < c[0].length; j++) {
+				System.out.print(c[i][j] + " - ");
+			}
+		}
 	}
 }
